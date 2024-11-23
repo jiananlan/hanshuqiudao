@@ -63,13 +63,16 @@ def qiudao(f):
             elif f[:3] == 'cos':
                 return '(' + qiudao(f[4:-1]) + ')*sin(' + f[4:-1] + ')*(-1)'
             elif '^' in f:
-                m, n = tuple(f.split('^'))
+                pos = f.index('^')
+                m, n = f[:pos], f[pos + 1:]
                 if 'x' in m and 'x' not in n:
                     return '(' + qiudao(m) + ')*(' + n + ')*(' + m + ')**(' + str(eval(n) - 1) + ')'  # 幂函数
-                if 'x' not in m and 'x' in n:
-                    return '(' + qiudao(n) + ')*log(' + m + ')*' + f #指数函数
-                if 'x' not in m+n:
-                    return '0' #常数
+                elif 'x' not in m and 'x' in n:
+                    return '(' + qiudao(n) + ')*log(' + m + ')*' + f  #指数函数
+                elif 'x' not in m + n:
+                    return '0'  #常数
+                else:
+                    return f'({f})*({qiudao(n)}*log({m})+{qiudao(m)}*({n})*({m})**(-1))'
             else:
                 return "###"
     elif not chengfa:
@@ -87,7 +90,7 @@ if __name__ == '__main__':
     e = 2.718281828459045
     pi = 3.141592653589793
     for x in range(10):
-        argument = {'a': 10} #定义函数参数
+        argument = {'a': 10}  #定义函数参数
         for key in argument:
             exec(f'{key} = {str(argument[key])}')
         try:
